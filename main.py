@@ -57,7 +57,7 @@ def train_net(rank, size, args):
     )
 
     train_loader = torch.utils.data.DataLoader(
-        dataset=train_dataset,
+        dataset=args.train_dataset,
         batch_size=batch_size_train,
         shuffle=args.determ,
         num_workers=0,
