@@ -74,18 +74,21 @@ def train_net(rank, size, args):
 
     model.train()
 
-    for batch_idx, (data, target) in enumerate(train_loader):
-        data = data.to(rank)
-        target = target.to(rank)
-        
-        optimizer.zero_grad()
-        output = model(data)
-        loss = loss_fn(output, target)
+    for epoch in range(args.epochs):
+        print("Epoch {}\n".format(epoch))
 
-        print("Loss on GPU {}: {}".format(rank, loss.item()))
+        for batch_idx, (data, target) in enumerate(train_loader):
+            data = data.to(rank)
+            target = target.to(rank)
 
-        loss.backward()
-        optimizer.step()
+            optimizer.zero_grad()
+            output = model(data)
+            loss = loss_fn(output, target)
+
+            print("Loss on GPU {}: {}".format(rank, loss.item()))
+
+            loss.backward()
+            optimizer.step()
 
     dist.barrier()
 
@@ -100,7 +103,7 @@ def train_net(rank, size, args):
 if __name__ == "__main__":
     # parse commandline
     parser = argparse.ArgumentParser(description='Runs training and evaluation of MNIST dataset.')
-    parser.add_argument('--epochs', type=int, help='number of epoch for which to train, default=3', default=3)
+    parser.add_argument('--epochs', type=int, help='number of epoch for which to train, default=10', default=10)
     parser.add_argument('--batch_size_train', type=int, help='training batch size, default=64', default=64)
     parser.add_argument('--batch_size_test', type=int, help='testing batch size, default=1000', default=1000)
     parser.add_argument('--number_of_gpus', type=int, help='number of GPUs to use for train/test')
