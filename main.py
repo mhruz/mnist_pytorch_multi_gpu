@@ -50,16 +50,8 @@ def train_net(rank, size, args):
 
     dist.init_process_group('nccl', rank=rank, world_size=size)
 
-    # Data loading code
-    train_dataset = torchvision.datasets.MNIST(
-        root='./data',
-        train=True,
-        transform=transforms.ToTensor(),
-        download=True
-    )
-
     train_sampler = torch.utils.data.distributed.DistributedSampler(
-        train_dataset,
+        args.train_dataset,
         num_replicas=size,
         rank=rank
     )
@@ -126,6 +118,16 @@ if __name__ == "__main__":
 
     if args.number_of_gpus is not None:
         gpus_on_node = args.number_of_gpus
+
+    # Data loading code
+    train_dataset = torchvision.datasets.MNIST(
+        root='./data',
+        train=True,
+        transform=transforms.ToTensor(),
+        download=True
+    )
+
+    args.train_dataset = train_dataset
 
     # create ONE process -> local_rank is always 0, node_id is the global_rank_offset
     mp.spawn(train_net, args=(gpus_on_node, args), nprocs=gpus_on_node)
