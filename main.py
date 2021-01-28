@@ -3,6 +3,7 @@
 # https://yangkky.github.io/2019/07/08/distributed-pytorch-tutorial.html
 
 import sys
+import os
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -119,6 +120,9 @@ if __name__ == "__main__":
     gpus_on_node = torch.cuda.device_count()
 
     print("gpus_on_node: {}".format(gpus_on_node))
+
+    os.environ["MASTER_ADDR"] = "localhost"
+    os.environ["MASTER_PORT"] = "12345"
 
     if args.number_of_gpus is not None:
         gpus_on_node = args.number_of_gpus
