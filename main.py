@@ -78,6 +78,9 @@ def train_net(rank, size, args):
         optimizer.zero_grad()
         output = model(data)
         loss = loss_fn(output, target)
+
+        print("Loss on GPU {}: {}".format(rank, loss.item()))
+
         loss.backward()
         optimizer.step()
 
