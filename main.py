@@ -75,6 +75,9 @@ def train_net(rank, size, args):
     model.train()
 
     for batch_idx, (data, target) in enumerate(train_loader):
+        data = data.to(rank)
+        target = target.to(rank)
+        
         optimizer.zero_grad()
         output = model(data)
         loss = loss_fn(output, target)
