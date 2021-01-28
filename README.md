@@ -7,7 +7,7 @@ Can be executed without parameters:
 python main.py
 ```
 
-To get hepl:
+To get help:
 
 ```
 python main.py -h
