@@ -101,10 +101,10 @@ def train_net(rank, size, args):
 if __name__ == "__main__":
     # parse commandline
     parser = argparse.ArgumentParser(description='Runs training and evaluation of MNIST dataset.')
-    parser.add_argument('epochs', type=int, help='number of epoch for which to train, default=3', default=3)
-    parser.add_argument('batch_size_train', type=int, help='training batch size, default=64', default=64)
-    parser.add_argument('batch_size_test', type=int, help='testing batch size, default=1000', default=1000)
-    parser.add_argument('number_of_gpus', type=int, help='number of GPUs to use for train/test, default=1', default=1)
+    parser.add_argument('--epochs', type=int, help='number of epoch for which to train, default=3', default=3)
+    parser.add_argument('--batch_size_train', type=int, help='training batch size, default=64', default=64)
+    parser.add_argument('--batch_size_test', type=int, help='testing batch size, default=1000', default=1000)
+    parser.add_argument('--number_of_gpus', type=int, help='number of GPUs to use for train/test')
     parser.add_argument('--output', type=str,
                         help='optional path to the output model, by default the model is not saved')
     parser.add_argument('--determ', type=bool,
@@ -119,6 +119,9 @@ if __name__ == "__main__":
     gpus_on_node = torch.cuda.device_count()
 
     print("gpus_on_node: {}".format(gpus_on_node))
+
+    if args.number_of_gpus is not None:
+        gpus_on_node = args.number_of_gpus
 
     # create ONE process -> local_rank is always 0, node_id is the global_rank_offset
     mp.spawn(train_net, args=(gpus_on_node, args), nprocs=gpus_on_node)
